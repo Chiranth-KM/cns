@@ -1,0 +1,60 @@
+
+#include <stdio.h>
+
+long long int power(long long int a, long long int b, long long int p)
+{
+    long long int result=1;
+    a%=p;
+    while(b>0)
+    {
+        if(b%2==1)
+        {
+            result=(result*a)%p;
+        }
+        b=b>>1;
+        a=(a*a)%p;
+    }
+    return result;
+}
+
+int main() { 
+    long long int prime, primitive, a,b;
+    
+    printf("Enter the prime number:");
+    if(scanf("%lld",&prime)!=1 || prime<=0)
+    {
+        printf("Invalid input..");
+        return 1;
+    }
+    
+    printf("Enter the primitive root number:");
+    if(scanf("%lld",&primitive)!=1 || primitive<=0 || primitive>prime)
+    {
+        printf("Invalid input..");
+        return 1;
+    }
+    
+    printf("Enter the Public key of A:");
+    if(scanf("%lld",&a)!=1 || a<=0 || a>=prime)
+    {
+        printf("Invalid input..");
+        return 1;
+    }
+    
+    printf("Enter the Public key of B:");
+    if(scanf("%lld",&b)!=1 || b<=0|| b>=prime)
+    {
+        printf("Invalid input..");
+        return 1;
+    }
+    
+    int pra=power(primitive,a,prime);
+    int prb=power(primitive,b,prime);
+    
+    int k1=power(prb,a,prime);
+    int k2=power(pra,b,prime);
+    
+    printf("K1=%d\nK2=%d",k1,k2);
+
+    return 0;
+}
