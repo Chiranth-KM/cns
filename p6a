@@ -1,0 +1,104 @@
+#include<stdio.h>
+#include<string.h>
+char message[100];
+int p,q,n,quotient,e,d;
+long int public_key[100], private_key[100];
+long int temp[100],plaintext[100], ciphertext[100], i;
+
+int gcd(int q)
+{
+    int e;
+    for(int i=2; i<q; i++)
+    {
+        if(q%i==0)
+        {
+            continue;
+        }
+        else
+        {
+            e=i;
+            break;
+        }
+
+        return e;
+    }
+}
+
+int inverse_mod(int e, int q)
+{
+    long int k = 1;
+    while (1) {
+        k = k + q;
+        if (k % e == 0)
+            return (k / e);
+    }
+}
+
+void encrypt()
+{
+    long int pt, ct, key=public_key[0],k,len;
+    len=strlen(message);
+    for (i=0; i<len; i++)
+    {
+        pt=message[i];
+        k=1;
+        for (int j = 0; j < key; j++)
+        {
+            k*=pt;
+            k%=n;
+        }
+        temp[i]=k;
+        ciphertext[i]=k;
+    }
+    ciphertext[i-1]=-1;
+    printf("\nThe Encrypted Message is:\n");
+    for (i = 0; ciphertext[i] != -1; i++)
+        printf("%ld ", ciphertext[i]);
+    printf("\n");
+}
+
+void decrypt() {
+    long int pt, ct, key = private_key[0], k;
+    for (i = 0; ciphertext[i] != -1; i++) {
+        ct = temp[i];
+        k = 1;
+        for (int j = 0; j < key; j++) {
+            k = k * ct;
+            k = k % n;
+        }
+        pt = k;
+        plaintext[i] = pt;
+    }
+    plaintext[i] = -1;
+    printf("\nThe Decrypted Message is: ");
+    for (i = 0; plaintext[i] != -1; i++)
+        printf("%c", plaintext[i]);
+    printf("\n");
+}
+
+int main()
+{
+    
+    printf("Enter the prime number 1:");
+    scanf("%d",&p);
+    printf("Enter the prime number 2:");
+    scanf("%d",&q);
+
+    n=p*q;
+    quotient=(p-1)*(q-1);
+    e=gcd(quotient);
+    d=inverse_mod(e,quotient);
+
+    public_key[0]=e;
+    private_key[0]=d;
+
+    printf("Enter the plain text:");
+    getchar();  // to consume the newline character left by previous input
+    fgets(message, sizeof(message), stdin);
+
+    encrypt();
+    decrypt();
+
+
+    //printf("%d\n%d\n%d\n%d\n%d\n%d\n",p,q,n,quotient,e,d);
+}
